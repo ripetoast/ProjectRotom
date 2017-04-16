@@ -1,3 +1,5 @@
+import rsc.Generator;
+
 /**
  *
  * @author kp16
@@ -9,6 +11,7 @@ public class Main {
      */
     public static void main(String[] args) {
         // TODO code application logic here
+        Generator.test();
     }
     
 }
