@@ -30,7 +30,7 @@ public class Generator {
             File input = new File(path2html);
             doc = Jsoup.parse(input, "UTF-8");
             
-            Util.getClassification(doc);
+            System.out.println(Util.getBaseEggSteps(doc));
         } catch (IOException ex) {
             Logger.getLogger(Generator.class.getName()).log(Level.SEVERE, null, ex);
         }

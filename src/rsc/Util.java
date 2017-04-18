@@ -11,34 +11,39 @@ import org.jsoup.select.Elements;
 public class Util {
     public static String getNameEng(Document doc, String dexNoString){
         String name = "";
-        boolean found = false;
-        for (int i = 0;i < 7;i++){   
-            Elements options = doc.getElementsByAttributeValue("name","SelectURL").get(i).children();
-            for (Element option : options) {
-                if (option.attr("value").toString().equals( "/pokedex-sm/" + dexNoString + ".shtml")) {
-                    String stuff = option.text();
-                    if (Character.toString(stuff.charAt(4)).equals(" ")) //if dex number >722
-                    {
-                        name = stuff.substring(5);
-                    } else { 
-                        name = stuff.substring(4);
+        try{        
+            boolean found = false;
+            for (int i = 0;i < 7;i++){   
+                Elements options = doc.getElementsByAttributeValue("name","SelectURL").get(i).children();
+                for (Element option : options) {
+                    if (option.attr("value").toString().equals( "/pokedex-sm/" + dexNoString + ".shtml")) {
+                        String stuff = option.text();
+                        if (Character.toString(stuff.charAt(4)).equals(" ")) //if dex number >722
+                        {
+                            name = stuff.substring(5);
+                        } else { 
+                            name = stuff.substring(4);
+                        }
+                        System.out.println(name);
+                        found = true;
+                        break;
                     }
-                    System.out.println(name);
-                    found = true;
-                    break;
+                    if (found) break;
                 }
-                if (found) break;
             }
+            
         }
-
-        return name;      
+        catch(Exception e){
+            System.out.println(e);
+        }
+        return name;
     }
 
     /* Supported languages 
      * French (fr)
      * German (ger)
      * Japanese Romanji (jpr)
-     * Japanese hiragana (jph)
+     * Japanese Hiragana (jph)
      */
     public static String getName(Document doc, String lang){
         int g = 0; // for counting
@@ -61,7 +66,7 @@ public class Util {
                 g++;
                 Elements tds = row.select("td");
                 if (g == row2Filter){
-                    if (g == 4){// If Japanse is selected 
+                    if (g == 4){// If Japanese is selected 
                         String txt = tds.get(1).text();
                         if (lang.toLowerCase().equals(supportedLang[0])){//jpr
                             name = txt.substring(0, txt.indexOf(" "));
@@ -84,29 +89,31 @@ public class Util {
     
     public static String getClassification(Document doc){
         int g = 0;      
-        String classifaction = "";
+        String classification = "";
         Element table = doc.select("table[class=dextable]").get(0); //select the first table.
         for (Element row : table.select("tr")) {
             g++;
             Elements tds = row.select("td");
             if (g == 17){
-                classifaction = tds.get(0).text();
+                classification = tds.get(0).text();
                 break;
             }
         }
         
-        return classifaction;
+        return classification;
     }
     
-    public static String getHeight(Document doc){
+    // in metres
+    public static double getHeight(Document doc){
         int g = 0;      
-        String height = "";
+        double height = 0;
         Element table = doc.select("table[class=dextable]").get(0); //select the first table.
         for (Element row : table.select("tr")) {
             g++;
             Elements tds = row.select("td");
             if (g == 17){
-                height = tds.get(0).text();
+                String str = tds.get(1).text();
+                height = Double.parseDouble(str.substring(str.indexOf(" "), str.indexOf("m")));
                 break;
             }
         }
@@ -114,4 +121,57 @@ public class Util {
         return height;
     }
     
+    // in kilograms
+    public static double getWeight(Document doc){
+        int g = 0;      
+        double weight = 0;
+        Element table = doc.select("table[class=dextable]").get(0); //select the first table.
+        for (Element row : table.select("tr")) {
+            g++;
+            Elements tds = row.select("td");
+            System.out.println(tds.text());
+            if (g == 17){
+                String str = tds.get(2).text();
+                weight = Double.parseDouble(str.substring(str.indexOf(" "), str.indexOf("k")));
+                break;
+            }
+        }
+        
+        return weight;
+    }
+    
+    public static int getCaptureRate(Document doc){
+        int g = 0;      
+        int cr = 0;
+        Element table = doc.select("table[class=dextable]").get(0); //select the first table.
+        for (Element row : table.select("tr")) {
+            g++;
+            Elements tds = row.select("td");
+            System.out.println(tds.text());
+            if (g == 17){
+                cr = Integer.parseInt(tds.get(3).text());
+                break;
+            }
+        }
+        
+        return cr;
+    }
+    
+    public static int getBaseEggSteps(Document doc){
+        int g = 0;      
+        int bes = 0;
+        Element table = doc.select("table[class=dextable]").get(0); //select the first table.
+        for (Element row : table.select("tr")) {
+            g++;
+            Elements tds = row.select("td");
+            System.out.println(tds.text());
+            if (g == 17){
+                String str = tds.get(4).text();
+                bes = Integer.parseInt(str.replace(",", ""));
+                break;
+            }
+        }
+        
+        return bes;
+    }
 }
