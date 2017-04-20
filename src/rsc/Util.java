@@ -9,6 +9,10 @@ import org.jsoup.select.Elements;
  * @author kp16
  */
 public class Util {
+    /* 
+    ---- Using Serebii ----
+    */
+    
     public static String getNameEng(Document doc, String dexNoString){
         String name = "";
         try{        
@@ -173,5 +177,24 @@ public class Util {
         }
         
         return bes;
+    }
+    
+    /* 
+    ---- Using pdb ---- 
+    */
+    public static int[] getBaseStats(Document doc){
+        int g = 0;
+        int[] baseStats = new int[6];
+        Element table = doc.select("table[class=vitals-table]").get(3); //select the first table.
+        for (Element row : table.select("tr")) {
+            Elements tds = row.select("td");
+            if (g == 7) break;
+            if (g >= 1){
+                baseStats[g - 1] = Integer.parseInt(tds.get(0).text());
+            }
+            g++;
+        }
+        
+        return baseStats;
     }
 }
