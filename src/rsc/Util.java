@@ -179,6 +179,23 @@ public class Util {
         return bes;
     }
     
+    public static int[] getTotalExperience(Document doc){
+        int g = 0;
+        int[] baseStats = new int[6];
+        Element table = doc.select("table[class=dex-table]").get(3); //select the first table.
+        for (Element row : table.select("tr")) {
+            Elements tds = row.select("td");
+            if (g == 7) break;
+            if (g >= 1){
+                System.out.println(tds.get(0).text());
+                baseStats[g - 1] = Integer.parseInt(tds.get(0).text());
+            }
+            g++;
+        }
+        
+        return baseStats;
+    }
+    
     /* 
     ---- Using pdb ---- 
     */
@@ -196,5 +213,45 @@ public class Util {
         }
         
         return baseStats;
+    }
+    
+    // level up
+    public static void getMoves1(Document doc){
+        Element table = doc.select("table[class=data-table wide-table]").get(0); //select the first table.
+        String info[] = {"Lv","Move","Type","Cat.","Power","Acc."};
+        for (Element row : table.select("tr")) {
+            int g = 0;
+            for (Element tds : row.select("td")){
+                if(g == 3){
+                    String cat = tds.select("img").attr("title");
+                    System.out.println(info[g]+": "+cat);
+                }else{
+                    System.out.println(info[g]+": "+tds.text());
+                }
+                g++;
+            }
+            System.out.println("----------------------------");
+        }
+        
+    }
+    
+    // egg moves
+    public static void getMoves2(Document doc){
+        Element table = doc.select("table[class=data-table wide-table]").get(1); //select the first table.
+        String info[] = {"Move","Type","Cat.","Power","Acc."};
+        for (Element row : table.select("tr")) {
+            int g = 0;
+            for (Element tds : row.select("td")){
+                if(g == 2){
+                    String url = tds.select("img").attr("title");
+                    System.out.println(info[g]+": "+url);
+                }else{
+                    System.out.println(info[g]+": "+tds.text());
+                }
+                g++;
+            }
+            System.out.println("----------------------------");
+        }
+        
     }
 }
