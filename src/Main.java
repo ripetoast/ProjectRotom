@@ -32,7 +32,7 @@ public class Main {
             File input = new File(path2html);
             doc = Jsoup.parse(input, "UTF-8");
             
-            Util.getMoves2(doc);
+            Util.getType(doc);
             //System.out.println();
         } catch (IOException ex) {
             Logger.getLogger(Generator.class.getName()).log(Level.SEVERE, null, ex);

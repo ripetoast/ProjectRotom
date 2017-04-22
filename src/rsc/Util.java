@@ -196,6 +196,28 @@ public class Util {
         return baseStats;
     }
     
+    // show the damage taken of attacks from each type
+    public static void getTypeDamageTaken(Document doc){
+        int g = 0;      
+        Element table = doc.select("table[class=dextable]").get(2); //select the first table.
+        for (Element row : table.select("tr")) {
+            Elements tds = row.select("td");
+            if(g == 1){
+                for (Element type : tds){
+                    String str = type.select("img").attr("src");
+                    System.out.println(str.substring(str.lastIndexOf("/")+1, str.indexOf("2")));
+                }  
+            }if(g == 2){
+                for (Element effect : tds){
+                    System.out.println(effect.text());
+                }
+                System.out.println(tds.get(17).text());
+            }
+            System.out.println(" ");
+            g++;
+        }
+    }
+    
     /* 
     ---- Using pdb ---- 
     */
@@ -213,6 +235,23 @@ public class Util {
         }
         
         return baseStats;
+    }
+    
+    public static void getType(Document doc){
+        int g = 0;      
+        Element table = doc.select("table[class=vitals-table]").get(0); //select the first table.
+        for (Element row : table.select("tr")) {
+            Elements tds = row.select("td");
+            if (g == 1){
+                int j = 0;
+                for(Element s: tds.select("a")){
+                    System.out.println("Type "+(j+1)+": "+s.text());
+                    j++;
+                }
+                break;
+            }
+            g++;
+        }
     }
     
     // level up
