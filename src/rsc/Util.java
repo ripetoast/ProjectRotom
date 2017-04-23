@@ -264,46 +264,43 @@ public class Util {
         return t;
     }
     
-    // level up
-    public static ArrayList<Move> getMoves1(Document doc){
+    /* 
+     * String - from
+     * Level up - lv
+     * Egg moves - egg
+     */
+    public static ArrayList<Move> getMoves(Document doc, String from){
         ArrayList<Move> moves = new ArrayList<>();
-        Element table = doc.select("table[class=data-table wide-table]").get(0); //select the first table.
-        int f = 0; //counter
-        for (Element row : table.select("tr")) {
-            if(f>=1){
-                Move move = new Move(
-                    row.select("td").get(1).text(),
-                    row.select("td").get(2).text(),
-                    row.select("td").select("img").attr("title"),
-                    row.select("td").get(4).text(),
-                    row.select("td").get(5).text());
-                int lv = Integer.parseInt(row.select("td").get(0).text());
-                move.setLevel(lv);
-                moves.add(move);
-            }
-            f++;
+        int tableNo = 0;
+        if(from.equals("lv")){
+            tableNo = 0;
         }
-        return moves;
-    }
-    
-    // egg moves
-    public static ArrayList<Move> getMoves2(Document doc){
-        ArrayList<Move> moves = new ArrayList<>();
-        Element table = doc.select("table[class=data-table wide-table]").get(1); //select the first table.
-        int f = 0; // counter
-        for (Element row : table.select("tr")) {
-            if(f>=1){
-                Move move = new Move(
-                    row.select("td").get(0).text(),
-                    row.select("td").get(1).text(),
-                    row.select("td").select("img").attr("title"),
-                    row.select("td").get(3).text(),
-                    row.select("td").get(4).text());
-                moves.add(move);
-            }
-            f++;
+        if(from.equals("egg")){
+            tableNo = 1;
         }
         
+        Element table = doc.select("table[class=data-table wide-table]").get(tableNo); //select the first table.
+        int f = 0; //counter
+        int diff = 0; // diff to apply to index of element
+        for (Element row : table.select("tr")) {
+            if(f>=1){
+                if(from.equals("egg")){
+                    diff=1;
+                }
+                Move move = new Move(
+                    row.select("td").get(1 - diff).text(),
+                    row.select("td").get(2 - diff).text(),
+                    row.select("td").select("img").attr("title"),
+                    row.select("td").get(4 - diff).text(),
+                    row.select("td").get(5 - diff).text());
+                if (from.equals("lv")){
+                    int lv = Integer.parseInt(row.select("td").get(0).text());
+                    move.setLevel(lv);
+                }   
+                moves.add(move);
+            }
+            f++;
+        }
         return moves;
     }
 }
