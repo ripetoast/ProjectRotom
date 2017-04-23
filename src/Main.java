@@ -18,9 +18,10 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-       /* reads html locally by saving the webpage into \nbproject\private\
-        * there's no need to save this page as webpage complete.
-        * put the path to this webpage in a txt file called config.txt
+       /* code below will read html saved locally, saving your webpages into \nbproject\private\
+        * there's no need to save this page as webpage complete in the save dialog of your browser.
+        * put the path to your local webpage in a txt file called config.txt
+        * This code will only read 1 file at a time
         */
 
         String current = System.getProperty("user.dir");
@@ -32,7 +33,6 @@ public class Main {
             File input = new File(path2html);
             doc = Jsoup.parse(input, "UTF-8");
             
-            System.out.println(Util.getMoves(doc,"lv"));
         } catch (IOException ex) {
             Logger.getLogger(Generator.class.getName()).log(Level.SEVERE, null, ex);
         }
