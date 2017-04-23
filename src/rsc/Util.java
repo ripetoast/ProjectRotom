@@ -1,5 +1,8 @@
 package rsc;
 
+import java.util.ArrayList;
+import model.Move;
+import model.Type;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -237,60 +240,70 @@ public class Util {
         return baseStats;
     }
     
-    public static void getType(Document doc){
-        int g = 0;      
+    public static Type getType(Document doc){
+        int g = 0;
+        Type t = null;
         Element table = doc.select("table[class=vitals-table]").get(0); //select the first table.
         for (Element row : table.select("tr")) {
             Elements tds = row.select("td");
             if (g == 1){
                 int j = 0;
+                String types[] = {"none","none"};
                 for(Element s: tds.select("a")){
-                    System.out.println("Type "+(j+1)+": "+s.text());
+                    types[j] = s.text();
+                    if (tds.select("a").size() == 1){
+                       break;
+                    }
                     j++;
                 }
+                t = new Type(types[0], types[1]);
                 break;
             }
             g++;
         }
+        return t;
     }
     
     // level up
-    public static void getMoves1(Document doc){
+    public static ArrayList<Move> getMoves1(Document doc){
+        ArrayList<Move> moves = new ArrayList<>();
         Element table = doc.select("table[class=data-table wide-table]").get(0); //select the first table.
-        String info[] = {"Lv","Move","Type","Cat.","Power","Acc."};
+        int f = 0; //counter
         for (Element row : table.select("tr")) {
-            int g = 0;
-            for (Element tds : row.select("td")){
-                if(g == 3){
-                    String cat = tds.select("img").attr("title");
-                    System.out.println(info[g]+": "+cat);
-                }else{
-                    System.out.println(info[g]+": "+tds.text());
-                }
-                g++;
+            if(f>=1){
+                Move move = new Move(
+                    row.select("td").get(1).text(),
+                    row.select("td").get(2).text(),
+                    row.select("td").select("img").attr("title"),
+                    row.select("td").get(4).text(),
+                    row.select("td").get(5).text());
+                int lv = Integer.parseInt(row.select("td").get(0).text());
+                move.setLevel(lv);
+                moves.add(move);
             }
-            System.out.println("----------------------------");
+            f++;
         }
-        
+        return moves;
     }
     
     // egg moves
-    public static void getMoves2(Document doc){
+    public static ArrayList<Move> getMoves2(Document doc){
+        ArrayList<Move> moves = new ArrayList<>();
         Element table = doc.select("table[class=data-table wide-table]").get(1); //select the first table.
-        String info[] = {"Move","Type","Cat.","Power","Acc."};
+        int f = 0; // counter
         for (Element row : table.select("tr")) {
-            int g = 0;
-            for (Element tds : row.select("td")){
-                if(g == 2){
-                    String url = tds.select("img").attr("title");
-                    System.out.println(info[g]+": "+url);
-                }else{
-                    System.out.println(info[g]+": "+tds.text());
-                }
-                g++;
+            if(f>=1){
+                Move move = new Move(
+                    row.select("td").get(0).text(),
+                    row.select("td").get(1).text(),
+                    row.select("td").select("img").attr("title"),
+                    row.select("td").get(3).text(),
+                    row.select("td").get(4).text());
+                moves.add(move);
             }
-            System.out.println("----------------------------");
+            f++;
         }
         
+        return moves;
     }
 }
