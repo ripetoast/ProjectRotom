@@ -2,7 +2,7 @@ package model;
 
 /**
  *
- * @author k196
+ * @author kp16
  */
 public class Move{
     private final String name; 

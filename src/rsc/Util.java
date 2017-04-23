@@ -3,6 +3,7 @@ package rsc;
 import java.util.ArrayList;
 import model.Move;
 import model.Type;
+import model.TypeDamage;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -200,25 +201,35 @@ public class Util {
     }
     
     // show the damage taken of attacks from each type
-    public static void getTypeDamageTaken(Document doc){
-        int g = 0;      
+    public static ArrayList<TypeDamage> getTypeDamageTaken(Document doc){
+        int g = 0; // counter
+        String[] types = {"Normal","Fire","Water","Electric","Grass","Ice"
+                ,"Fighting","Poison","Ground","Flying","Psychic","Bug",
+                "Rock","Ghost","Dragon","Dark","Steel","Fairy"};
+        double[] multipliers = new double[18];
+        ArrayList<TypeDamage> typeDamages = new ArrayList<>();
+
         Element table = doc.select("table[class=dextable]").get(2); //select the first table.
         for (Element row : table.select("tr")) {
             Elements tds = row.select("td");
-            if(g == 1){
-                for (Element type : tds){
-                    String str = type.select("img").attr("src");
-                    System.out.println(str.substring(str.lastIndexOf("/")+1, str.indexOf("2")));
-                }  
-            }if(g == 2){
+            if(g == 2){
+                int j = 0; // counter for types
                 for (Element effect : tds){
-                    System.out.println(effect.text());
+                    String str = effect.text();
+                    multipliers[j] = Double.parseDouble(str.replace("*",""));
+                    j++;
                 }
-                System.out.println(tds.get(17).text());
+                break;
             }
-            System.out.println(" ");
             g++;
         }
+
+        for (int i = 0; i < 17;i++){
+            TypeDamage td = new TypeDamage(types[i], multipliers[i]);
+            typeDamages.add(td);
+        }
+        
+        return typeDamages;
     }
     
     /* 
@@ -265,28 +276,27 @@ public class Util {
     }
     
     /* 
-     * String - from
+     * String param is to select which set of moves to get
      * Level up - lv
      * Egg moves - egg
      */
     public static ArrayList<Move> getMoves(Document doc, String from){
         ArrayList<Move> moves = new ArrayList<>();
-        int tableNo = 0;
+        int tableNo = 0; // table to select
+        int diff = 0; // diff to apply to index of element
         if(from.equals("lv")){
             tableNo = 0;
+            diff = 0;
         }
         if(from.equals("egg")){
             tableNo = 1;
+            diff=1;
         }
         
         Element table = doc.select("table[class=data-table wide-table]").get(tableNo); //select the first table.
         int f = 0; //counter
-        int diff = 0; // diff to apply to index of element
         for (Element row : table.select("tr")) {
             if(f>=1){
-                if(from.equals("egg")){
-                    diff=1;
-                }
                 Move move = new Move(
                     row.select("td").get(1 - diff).text(),
                     row.select("td").get(2 - diff).text(),
