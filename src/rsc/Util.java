@@ -24,7 +24,7 @@ public class Util {
             for (int i = 0;i < 7;i++){   
                 Elements options = doc.getElementsByAttributeValue("name","SelectURL").get(i).children();
                 for (Element option : options) {
-                    if (option.attr("value").toString().equals( "/pokedex-sm/" + dexNoString + ".shtml")) {
+                    if (option.attr("value").toString().equals("/pokedex-sm/" + dexNoString + ".shtml")) {
                         String stuff = option.text();
                         if (Character.toString(stuff.charAt(4)).equals(" ")) //if dex number >722
                         {
@@ -284,13 +284,9 @@ public class Util {
         ArrayList<Move> moves = new ArrayList<>();
         int tableNo = 0; // table to select
         int diff = 0; // diff to apply to index of element
-        if(from.equals("lv")){
-            tableNo = 0;
-            diff = 0;
-        }
         if(from.equals("egg")){
             tableNo = 1;
-            diff=1;
+            diff = 1;
         }
         
         Element table = doc.select("table[class=data-table wide-table]").get(tableNo); //select the first table.
